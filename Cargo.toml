@@ -1,0 +1,12 @@
+[package]
+name = "pokerngtool"
+version = "1.0.0"
+edition = "2018"
+
+[dependencies]
+gtk = { version = "0.6", features = ["v3_22"] }
+glib = "0.7"
+gdk = "0.10"
+gdk-pixbuf = "0.6"
+gio = "0.6"
+regex = "1.1"
