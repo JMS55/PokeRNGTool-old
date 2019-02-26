@@ -19,11 +19,9 @@ fn main() {
         .expect("Failed to initialize gtk::Application");
 
     application.connect_startup(|_| {
-        if cfg!(windows) || cfg!(macos) {
-            Settings::get_default()
-                .unwrap()
-                .set_property_gtk_application_prefer_dark_theme(true);
-        }
+        Settings::get_default()
+            .unwrap()
+            .set_property_gtk_application_prefer_dark_theme(true);
     });
 
     application.connect_activate(|application| {
