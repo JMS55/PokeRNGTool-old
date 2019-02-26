@@ -33,22 +33,17 @@ impl NatureInput {
             let label = Label::new(*nature);
             listbox.add(&label);
         }
-        let first_row = listbox.get_children()[0]
-            .clone()
-            .downcast::<ListBoxRow>()
-            .unwrap();
-        listbox.select_row(&first_row);
 
         popover.set_border_width(6);
         scrolled_window.set_shadow_type(ShadowType::In);
         scrolled_window.set_propagate_natural_height(true);
-        listbox.connect_row_selected({
+        listbox.connect_row_activated({
             let widget = widget.clone();
             let popover = popover.clone();
             move |_, row| {
                 popover.popdown();
                 widget.get_children()[0].destroy();
-                let nature = row.clone().unwrap().get_children()[0]
+                let nature = row.clone().get_children()[0]
                     .clone()
                     .downcast::<Label>()
                     .unwrap()
@@ -103,7 +98,7 @@ impl NatureInput {
 
     pub fn get_nature(&self) -> Option<Nature> {
         use Nature::*;
-        match self.listbox.get_selected_row().unwrap().get_children()[0]
+        match self.widget.get_children()[0]
             .clone()
             .downcast::<Label>()
             .unwrap()
@@ -142,11 +137,21 @@ impl NatureInput {
     }
 
     pub fn reset(&self) {
-        let first_row = self.listbox.get_children()[0]
+        self.widget.get_children()[0].destroy();
+        let nature = self.listbox.get_children()[0]
             .clone()
             .downcast::<ListBoxRow>()
+            .unwrap()
+            .get_children()[0]
+            .clone()
+            .downcast::<Label>()
+            .unwrap()
+            .get_text()
             .unwrap();
-        self.listbox.select_row(&first_row);
+        let label = Label::new(nature.as_str());
+        label.set_halign(Align::Start);
+        label.show();
+        self.widget.add(&label);
     }
 
     pub fn widget(&self) -> &MenuButton {

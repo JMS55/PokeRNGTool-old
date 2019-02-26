@@ -38,22 +38,17 @@ impl SpeciesInput {
             row.add(&label);
             listbox.add(&row);
         }
-        let first_row = listbox.get_children()[0]
-            .clone()
-            .downcast::<ListBoxRow>()
-            .unwrap();
-        listbox.select_row(&first_row);
 
         popover.set_border_width(6);
         scrolled_window.set_shadow_type(ShadowType::In);
         scrolled_window.set_propagate_natural_height(true);
-        listbox.connect_row_selected({
+        listbox.connect_row_activated({
             let widget = widget.clone();
             let popover = popover.clone();
             move |_, row| {
                 popover.popdown();
                 widget.get_children()[0].destroy();
-                let species_str = row.clone().unwrap().get_children()[0]
+                let species_str = row.get_children()[0]
                     .clone()
                     .downcast::<gtk::Box>()
                     .unwrap()
@@ -119,7 +114,7 @@ impl SpeciesInput {
     }
 
     pub fn set_species(&self, species: Vec<Species>) {
-        for row in self.listbox().get_children() {
+        for row in self.listbox.get_children() {
             row.destroy();
         }
         for current_species in species {
@@ -135,7 +130,7 @@ impl SpeciesInput {
     }
 
     pub fn get_current_species(&self) -> Species {
-        let species_str = self.listbox.get_selected_row().unwrap().get_children()[0]
+        let species_str = self.widget.get_children()[0]
             .clone()
             .downcast::<gtk::Box>()
             .unwrap()
@@ -149,19 +144,33 @@ impl SpeciesInput {
     }
 
     pub fn reset(&self) {
-        let first_row = self.listbox.get_children()[0]
+        self.widget.get_children()[0].destroy();
+        let species_str = self.listbox.get_children()[0]
             .clone()
             .downcast::<ListBoxRow>()
+            .unwrap()
+            .get_children()[0]
+            .clone()
+            .downcast::<gtk::Box>()
+            .unwrap()
+            .get_children()[1]
+            .clone()
+            .downcast::<Label>()
+            .unwrap()
+            .get_text()
             .unwrap();
-        self.listbox.select_row(&first_row);
+        let species = Self::parse_species_str(&species_str);
+        let hbox = gtk::Box::new(Orientation::Horizontal, 3);
+        let icon = Image::new_from_file([Self::get_path_to_sprite(species).as_path()][0]);
+        let label = Label::new(species.to_str());
+        hbox.add(&icon);
+        hbox.add(&label);
+        hbox.show_all();
+        self.widget.add(&hbox);
     }
 
     pub fn widget(&self) -> &MenuButton {
         &self.widget
-    }
-
-    pub fn listbox(&self) -> &ListBox {
-        &self.listbox
     }
 
     fn parse_species_str(species_str: &str) -> Species {

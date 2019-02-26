@@ -1,6 +1,6 @@
 use crate::misc::{Gender, GenderRatio};
 use crate::widgets::SpeciesInput;
-use gtk::{ComboBoxExtManual, ComboBoxText, ComboBoxTextExt, ListBoxExt, WidgetExt};
+use gtk::{ComboBoxExtManual, ComboBoxText, ComboBoxTextExt, ContainerExt, WidgetExt};
 
 #[derive(Clone)]
 pub struct GenderInput {
@@ -20,7 +20,7 @@ impl GenderInput {
             }
             _ => widget.set_sensitive(true),
         }
-        species_input.listbox().connect_row_selected({
+        species_input.widget().connect_add({
             let species_input = species_input.clone();
             let widget = widget.clone();
             move |_, _| match species_input.get_current_species().get_gender_ratio() {

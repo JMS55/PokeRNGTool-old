@@ -1,6 +1,6 @@
 use crate::misc::Ability;
 use crate::widgets::SpeciesInput;
-use gtk::{ComboBoxExtManual, ComboBoxText, ComboBoxTextExt, ListBoxExt, WidgetExt};
+use gtk::{ComboBoxExtManual, ComboBoxText, ComboBoxTextExt, ContainerExt, WidgetExt};
 
 #[derive(Clone)]
 pub struct AbilityInput {
@@ -22,7 +22,7 @@ impl AbilityInput {
             }
         }
         widget.set_active(0);
-        species_input.listbox().connect_row_selected({
+        species_input.widget().connect_add({
             let species_input = species_input.clone();
             let widget = widget.clone();
             move |_, _| {
