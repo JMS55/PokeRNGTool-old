@@ -221,21 +221,20 @@ impl Frame {
         ];
         let mut results = Vec::with_capacity(max_frame as usize + 1);
         for frame_number in 0..=max_frame {
-            if frame_number.wrapping_sub(delay) > max_frame {
-                continue;
+            if frame_number.wrapping_sub(delay) <= max_frame {
+                let frame = Frame {
+                    species,
+                    number: frame_number.wrapping_sub(delay),
+                    pid: ((rng[1] as u32) << 16) | rng[0] as u32,
+                    hp_iv: (rng[2] & 0x1F) as u8,
+                    attack_iv: ((rng[2] & 0x3FF) >> 5) as u8,
+                    defense_iv: ((rng[2] & 0x7FFF) >> 10) as u8,
+                    special_attack_iv: ((rng[3] & 0x3FF) >> 5) as u8,
+                    special_defense_iv: ((rng[3] & 0x7FFF) >> 10) as u8,
+                    speed_iv: (rng[3] & 0x1F) as u8,
+                };
+                results.push(frame);
             }
-            let frame = Frame {
-                species,
-                number: frame_number.wrapping_sub(delay),
-                pid: ((rng[1] as u32) << 16) | rng[0] as u32,
-                hp_iv: (rng[2] & 0x1F) as u8,
-                attack_iv: ((rng[2] & 0x3FF) >> 5) as u8,
-                defense_iv: ((rng[2] & 0x7FFF) >> 10) as u8,
-                special_attack_iv: ((rng[3] & 0x3FF) >> 5) as u8,
-                special_defense_iv: ((rng[3] & 0x7FFF) >> 10) as u8,
-                speed_iv: (rng[3] & 0x1F) as u8,
-            };
-            results.push(frame);
             rng = [rng[1], rng[2], rng[3], lcrng.next_u16()];
         }
         results
