@@ -1,7 +1,7 @@
 use crate::misc::Nature;
 use glib::object::Cast;
 use gtk::{
-    ButtonExt, ContainerExt, EntryExt, GtkWindowExt, Label, LabelExt, ListBox, ListBoxExt,
+    Align, ButtonExt, ContainerExt, EntryExt, GtkWindowExt, Label, LabelExt, ListBox, ListBoxExt,
     ListBoxRow, MenuButton, MenuButtonExt, Orientation, Popover, PopoverExt, ScrolledWindow,
     ScrolledWindowExt, SearchEntry, SearchEntryExt, ShadowType, WidgetExt, Window,
 };
@@ -22,6 +22,7 @@ impl NatureInput {
         let listbox = ListBox::new();
 
         let label = Label::new("Any");
+        label.set_halign(Align::Start);
         widget.add(&label);
 
         for nature in &[
@@ -54,6 +55,7 @@ impl NatureInput {
                     .get_text()
                     .unwrap();
                 let label = Label::new(nature.as_str());
+                label.set_halign(Align::Start);
                 label.show();
                 widget.add(&label);
             }
