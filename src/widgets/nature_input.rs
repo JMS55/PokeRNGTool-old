@@ -1,9 +1,9 @@
 use crate::misc::Nature;
 use glib::object::Cast;
 use gtk::{
-    Align, ButtonExt, ContainerExt, EntryExt, GtkWindowExt, Label, LabelExt, ListBox, ListBoxExt,
-    ListBoxRow, MenuButton, MenuButtonExt, Orientation, Popover, PopoverExt, ScrolledWindow,
-    ScrolledWindowExt, SearchEntry, SearchEntryExt, ShadowType, WidgetExt, Window,
+    BoxExt, ButtonExt, ContainerExt, EntryExt, GtkWindowExt, IconSize, Image, Label, LabelExt,
+    ListBox, ListBoxExt, ListBoxRow, MenuButton, MenuButtonExt, Orientation, Popover, PopoverExt,
+    ScrolledWindow, ScrolledWindowExt, SearchEntry, SearchEntryExt, ShadowType, WidgetExt, Window,
 };
 
 #[derive(Clone)]
@@ -21,9 +21,12 @@ impl NatureInput {
         let scrolled_window = ScrolledWindow::new(gtk::NONE_ADJUSTMENT, gtk::NONE_ADJUSTMENT);
         let listbox = ListBox::new();
 
+        let hbox = gtk::Box::new(Orientation::Horizontal, 3);
         let label = Label::new("Any");
-        label.set_halign(Align::Start);
-        widget.add(&label);
+        let icon = Image::new_from_icon_name("pan-down-symbolic", IconSize::Button);
+        hbox.add(&label);
+        hbox.pack_end(&icon, false, false, 0);
+        widget.add(&hbox);
 
         for nature in &[
             "Any", "Adamant", "Bashful", "Bold", "Brave", "Calm", "Careful", "Docile", "Gentle",
@@ -49,17 +52,24 @@ impl NatureInput {
                     .unwrap()
                     .get_text()
                     .unwrap();
+                let hbox = gtk::Box::new(Orientation::Horizontal, 3);
                 let label = Label::new(nature.as_str());
-                label.set_halign(Align::Start);
-                label.show();
-                widget.add(&label);
+                let icon = Image::new_from_icon_name("pan-down-symbolic", IconSize::Button);
+                hbox.add(&label);
+                hbox.pack_end(&icon, false, false, 0);
+                hbox.show_all();
+                widget.add(&hbox);
+            }
+        });
+        popover.connect_hide({
+            let search_entry = search_entry.clone();
+            move |_| {
+                search_entry.set_text("");
             }
         });
         widget.connect_clicked({
             let scrolled_window = scrolled_window.clone();
-            let search_entry = search_entry.clone();
             move |widget| {
-                search_entry.set_text("");
                 let window = widget.get_toplevel().unwrap().downcast::<Window>().unwrap();
                 let height_limit = (window.get_size().1 as f32 * 0.9).ceil();
                 scrolled_window.set_min_content_height(height_limit as i32);
@@ -99,6 +109,10 @@ impl NatureInput {
     pub fn get_nature(&self) -> Option<Nature> {
         use Nature::*;
         match self.widget.get_children()[0]
+            .clone()
+            .downcast::<gtk::Box>()
+            .unwrap()
+            .get_children()[0]
             .clone()
             .downcast::<Label>()
             .unwrap()
@@ -148,10 +162,13 @@ impl NatureInput {
             .unwrap()
             .get_text()
             .unwrap();
+        let hbox = gtk::Box::new(Orientation::Horizontal, 3);
         let label = Label::new(nature.as_str());
-        label.set_halign(Align::Start);
-        label.show();
-        self.widget.add(&label);
+        let icon = Image::new_from_icon_name("pan-down-symbolic", IconSize::Button);
+        hbox.add(&label);
+        hbox.pack_end(&icon, false, false, 0);
+        hbox.show_all();
+        self.widget.add(&hbox);
     }
 
     pub fn widget(&self) -> &MenuButton {

@@ -1,9 +1,9 @@
 use crate::misc::Species;
 use glib::object::Cast;
 use gtk::{
-    ButtonExt, ContainerExt, EntryExt, GtkWindowExt, Image, Label, LabelExt, ListBox, ListBoxExt,
-    ListBoxRow, MenuButton, MenuButtonExt, Orientation, Popover, PopoverExt, ScrolledWindow,
-    ScrolledWindowExt, SearchEntry, SearchEntryExt, ShadowType, WidgetExt, Window,
+    BoxExt, ButtonExt, ContainerExt, EntryExt, GtkWindowExt, IconSize, Image, Label, LabelExt,
+    ListBox, ListBoxExt, ListBoxRow, MenuButton, MenuButtonExt, Orientation, Popover, PopoverExt,
+    ScrolledWindow, ScrolledWindowExt, SearchEntry, SearchEntryExt, ShadowType, WidgetExt, Window,
 };
 use std::path::PathBuf;
 
@@ -23,10 +23,12 @@ impl SpeciesInput {
         let listbox = ListBox::new();
 
         let hbox = gtk::Box::new(Orientation::Horizontal, 3);
-        let icon = Image::new_from_file([Self::get_path_to_sprite(species[0]).as_path()][0]);
+        let sprite = Image::new_from_file([Self::get_path_to_sprite(species[0]).as_path()][0]);
         let label = Label::new(species[0].to_str());
-        hbox.add(&icon);
+        let icon = Image::new_from_icon_name("pan-down-symbolic", IconSize::Button);
+        hbox.add(&sprite);
         hbox.add(&label);
+        hbox.pack_end(&icon, false, false, 0);
         widget.add(&hbox);
 
         for current_species in species {
@@ -60,19 +62,25 @@ impl SpeciesInput {
                     .unwrap();
                 let species = Self::parse_species_str(&species_str);
                 let hbox = gtk::Box::new(Orientation::Horizontal, 3);
-                let icon = Image::new_from_file([Self::get_path_to_sprite(species).as_path()][0]);
+                let sprite = Image::new_from_file([Self::get_path_to_sprite(species).as_path()][0]);
                 let label = Label::new(species.to_str());
-                hbox.add(&icon);
+                let icon = Image::new_from_icon_name("pan-down-symbolic", IconSize::Button);
+                hbox.add(&sprite);
                 hbox.add(&label);
+                hbox.pack_end(&icon, false, false, 0);
                 hbox.show_all();
                 widget.add(&hbox);
             }
         });
+        popover.connect_hide({
+            let search_entry = search_entry.clone();
+            move |_| {
+                search_entry.set_text("");
+            }
+        });
         widget.connect_clicked({
             let scrolled_window = scrolled_window.clone();
-            let search_entry = search_entry.clone();
             move |widget| {
-                search_entry.set_text("");
                 let window = widget.get_toplevel().unwrap().downcast::<Window>().unwrap();
                 let height_limit = (window.get_size().1 as f32 * 0.9).ceil();
                 scrolled_window.set_min_content_height(height_limit as i32);
@@ -161,10 +169,12 @@ impl SpeciesInput {
             .unwrap();
         let species = Self::parse_species_str(&species_str);
         let hbox = gtk::Box::new(Orientation::Horizontal, 3);
-        let icon = Image::new_from_file([Self::get_path_to_sprite(species).as_path()][0]);
+        let sprite = Image::new_from_file([Self::get_path_to_sprite(species).as_path()][0]);
         let label = Label::new(species.to_str());
-        hbox.add(&icon);
+        let icon = Image::new_from_icon_name("pan-down-symbolic", IconSize::Button);
+        hbox.add(&sprite);
         hbox.add(&label);
+        hbox.pack_end(&icon, false, false, 0);
         hbox.show_all();
         self.widget.add(&hbox);
     }
