@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=PokeRNGTool
+Exec=pokerngtool
+Comment=Pokemon RNG Tool
+Icon=org.jms.PokeRNGTool
+Type=Application
+Categories=Utility
+StartupNotify=true

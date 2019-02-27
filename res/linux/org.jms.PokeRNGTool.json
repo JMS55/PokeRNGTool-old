@@ -1,0 +1,64 @@
+{
+    "app-id": "org.jms.PokeRNGTool",
+    "runtime": "org.freedesktop.Platform",
+    "runtime-version": "18.08",
+    "sdk": "org.freedesktop.Sdk",
+    "sdk-extensions": [
+        "org.freedesktop.Sdk.Extension.rust-stable"
+    ],
+    "finish-args": [
+        "--socket=wayland"
+    ],
+    "build-options": {
+        "append-path": "/usr/lib/sdk/rust-stable/bin",
+        "build-args": [
+            "--share=network"
+        ]
+    },
+    "command": "pokerngtool",
+    "modules": [
+        {
+            "name": "PokeRNGTool",
+            "buildsystem": "simple",
+            "build-commands": [
+                "ls",
+                "cargo build --release",
+                "install -D ./target/release/pokerngtool /app/bin/pokerngtool",
+                "mkdir -p /app/share/sprites",
+                "mv sprites /app/share",
+                "mkdir -p /app/share/applications",
+                "mv org.jms.PokeRNGTool.desktop /app/share/applications",
+                "mkdir -p /app/share/icons/hicolor/scalable/apps",
+                "mv org.jms.PokeRNGTool.svg /app/share/icons/hicolor/scalable/apps"
+            ],
+            "sources": [
+                {
+                    "type": "dir",
+                    "path": "../../src",
+                    "dest": "src"
+                },
+                {
+                    "type": "file",
+                    "path": "../../Cargo.toml"
+                },
+                {
+                    "type": "file",
+                    "path": "../../Cargo.lock"
+                },
+                {
+                    "type": "file",
+                    "path": "../../res/linux/org.jms.PokeRNGTool.desktop"
+                },
+                {
+                    "type": "file",
+                    "path": "../../res/org.jms.PokeRNGTool.svg"
+                },
+                {
+                    "type": "dir",
+                    "path": "../../res/sprites",
+                    "dest": "sprites"
+                }
+            ]
+        }
+    ]
+}

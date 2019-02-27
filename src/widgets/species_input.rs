@@ -221,7 +221,7 @@ impl SpeciesInput {
         let mut path;
         if cfg!(debug_assertions) {
             path = std::env::current_dir().unwrap();
-            path.push("icons");
+            path.push("res");
         } else {
             path = std::env::current_exe().unwrap();
             path.pop();
