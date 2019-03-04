@@ -1,5 +1,7 @@
 mod ability_input;
+mod compatability_input;
 mod delay_input;
+mod difference_input;
 mod frame_input;
 mod gender_input;
 mod id_input;
@@ -11,7 +13,9 @@ mod shiny_only_input;
 mod species_input;
 
 pub use ability_input::AbilityInput;
+pub use compatability_input::CompatabilityInput;
 pub use delay_input::DelayInput;
+pub use difference_input::DifferenceInput;
 pub use frame_input::FrameInput;
 pub use gender_input::GenderInput;
 pub use id_input::IDInput;

@@ -7,6 +7,7 @@ use gtk::{
 };
 use std::env::args;
 
+mod egg_pid;
 mod lcrng;
 mod misc;
 mod stationary;
@@ -37,6 +38,11 @@ fn main() {
             &stationary::ui(&search_button, &reset_button, &stack),
             "stationary",
             "Stationary",
+        );
+        stack.add_titled(
+            &egg_pid::ui(&search_button, &reset_button, &stack),
+            "egg_pid",
+            "Egg PID",
         );
 
         let stack_switcher = StackSwitcher::new();
