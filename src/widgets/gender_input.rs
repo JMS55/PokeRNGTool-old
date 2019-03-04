@@ -10,9 +10,16 @@ pub struct GenderInput {
 impl GenderInput {
     pub fn new(species_input: &SpeciesInput) -> Self {
         let widget = ComboBoxText::new();
-        widget.append_text("Any");
-        widget.append_text("Male");
-        widget.append_text("Female");
+        match species_input.get_current_species().get_gender_ratio() {
+            GenderRatio::Genderless => widget.append_text("Genderless"),
+            GenderRatio::AlwaysMale => widget.append_text("Male"),
+            GenderRatio::AlwaysFemale => widget.append_text("Female"),
+            _ => {
+                widget.append_text("Any");
+                widget.append_text("Male");
+                widget.append_text("Female");
+            }
+        }
         widget.set_active(0);
         match species_input.get_current_species().get_gender_ratio() {
             GenderRatio::Genderless | GenderRatio::AlwaysMale | GenderRatio::AlwaysFemale => {
@@ -20,14 +27,29 @@ impl GenderInput {
             }
             _ => widget.set_sensitive(true),
         }
+
         species_input.widget().connect_add({
             let species_input = species_input.clone();
             let widget = widget.clone();
-            move |_, _| match species_input.get_current_species().get_gender_ratio() {
-                GenderRatio::Genderless | GenderRatio::AlwaysMale | GenderRatio::AlwaysFemale => {
-                    widget.set_sensitive(false)
+            move |_, _| {
+                widget.remove_all();
+                match species_input.get_current_species().get_gender_ratio() {
+                    GenderRatio::Genderless => widget.append_text("Genderless"),
+                    GenderRatio::AlwaysMale => widget.append_text("Male"),
+                    GenderRatio::AlwaysFemale => widget.append_text("Female"),
+                    _ => {
+                        widget.append_text("Any");
+                        widget.append_text("Male");
+                        widget.append_text("Female");
+                    }
                 }
-                _ => widget.set_sensitive(true),
+                widget.set_active(0);
+                match species_input.get_current_species().get_gender_ratio() {
+                    GenderRatio::Genderless
+                    | GenderRatio::AlwaysMale
+                    | GenderRatio::AlwaysFemale => widget.set_sensitive(false),
+                    _ => widget.set_sensitive(true),
+                }
             }
         });
         Self { widget }
