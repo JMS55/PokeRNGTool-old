@@ -15,7 +15,7 @@ impl CompatabilityInput {
         Self { widget }
     }
 
-    pub fn get_compatability(&self) -> u8 {
+    pub fn get_compatability(&self) -> u32 {
         match self.widget.get_active_text().unwrap().as_ref() {
             "The two don't seem to like each other" => 20,
             "The two seem to get along" => 50,
